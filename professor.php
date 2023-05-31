@@ -29,7 +29,7 @@ class Professor {
         return $stmt;
     }
 
-    public function create($cpf, $nome, $email, $telefone, $cursoMinistrados, $experienciaEnsino, $areaEspecializacao, $numAulas) {
+    public function create($cpf, $nome, $email, $senha, $telefone, $cursoMinistrados, $experienciaEnsino, $areaEspecializacao, $numAulas) {
         $query = "INSERT INTO " . $this->table_name . " (fk_Usuario_CPF, Curso_ministrados, Experiencia_de_ensino, Area_de_especializacao, Num_aulas) 
                 VALUES (:cpf, :cursoMinistrados, :experienciaEnsino, :areaEspecializacao, :numAulas)";
         $stmt = $this->conn->prepare($query);
@@ -40,7 +40,7 @@ class Professor {
         $stmt->bindParam(":numAulas", $numAulas);
 
         $usuario = new Usuario($this->conn);
-        if (!$usuario->create($cpf, $nome, $email, $telefone)) {
+        if (!$usuario->create($cpf, $nome, $email, $senha, $telefone)) {
             return false;
         }
 
@@ -77,8 +77,12 @@ class Professor {
         $query = "DELETE FROM " . $this->table_name . " WHERE fk_Usuario_CPF = :cpf";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":cpf", $cpf);
-    
+
         if ($stmt->execute()) {
+            $usuario = new Usuario($this->conn);
+            if (!$usuario->delete($cpf)) {
+                return false;
+            }
             return true;
         } else {
             return false;
@@ -147,9 +151,10 @@ function handleRequest($conn) {
         $nome = $data->nome;
         $email = $data->email;
         $telefone = $data->telefone;
+        $senha = $data->senha;
 
         $professor = new Professor($conn);
-        if ($professor->create($cpf, $nome, $email, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data->numAulas)) {
+        if ($professor->create($cpf, $nome, $email, $senha, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data->numAulas)) {
             echo json_encode(array('message' => 'Usuário e professor criados com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível criar o usuário e professor.'));

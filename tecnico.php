@@ -29,7 +29,7 @@ class Tecnico {
         return $stmt;
     }
 
-    public function create($cpf, $nome, $email, $telefone, $certificado, $numeroCRQ, $cargaHoraria) {
+    public function create($cpf, $nome, $email, $senha, $telefone, $certificado, $numeroCRQ, $cargaHoraria) {
         $query = "INSERT INTO " . $this->table_name . " (fk_Usuario_CPF, Certificado, Numero_do_CRQ, Carga_horaria) 
                 VALUES (:cpf, :certificado, :numeroCRQ, :cargaHoraria)";
         $stmt = $this->conn->prepare($query);
@@ -39,7 +39,7 @@ class Tecnico {
         $stmt->bindParam(":cargaHoraria", $cargaHoraria);
 
         $usuario = new Usuario($this->conn);
-        if (!$usuario->create($cpf, $nome, $email, $telefone)) {
+        if (!$usuario->create($cpf, $nome, $email, $senha, $telefone)) {
             return false;
         }
 
@@ -77,6 +77,10 @@ class Tecnico {
         $stmt->bindParam(":cpf", $cpf);
     
         if ($stmt->execute()) {
+            $usuario = new Usuario($this->conn);
+            if (!$usuario->delete($cpf)) {
+                return false;
+            }
             return true;
         } else {
             return false;
@@ -144,10 +148,11 @@ function handleRequest($conn) {
         $cpf = $data->cpf;
         $nome = $data->nome;
         $email = $data->email;
+        $senha = $data->senha;
         $telefone = $data->telefone;
 
         $tecnico = new Tecnico($conn);
-        if ($tecnico->create($cpf, $nome, $email, $telefone, $data->certificado, $data->numeroCRQ, $data->cargaHoraria)) {
+        if ($tecnico->create($cpf, $nome, $email, $senha, $telefone, $data->certificado, $data->numeroCRQ, $data->cargaHoraria)) {
             echo json_encode(array('message' => 'Usuário e técnico criados com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível criar o usuário e técnico.'));

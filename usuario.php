@@ -25,12 +25,14 @@ class Usuario {
         return $stmt;
     }
 
-    public function create($cpf, $nome, $email, $telefone) {
-        $query = "INSERT INTO " . $this->table_name . " (cpf, nome, email, telefone) VALUES (:cpf, :nome, :email, :telefone)";
+    public function create($cpf, $nome, $email, $senha, $telefone) {
+        $senha = md5($senha);
+        $query = "INSERT INTO " . $this->table_name . " (cpf, nome, email, senha, telefone) VALUES (:cpf, :nome, :email, :senha, :telefone)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":cpf", $cpf);
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":senha", $senha);
         $stmt->bindParam(":telefone", $telefone);
 
         if ($stmt->execute()) {
@@ -82,7 +84,6 @@ class Usuario {
         $query = "DELETE FROM " . $this->table_name . " WHERE cpf = :cpf";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":cpf", $cpf);
-
         if ($stmt->execute()) {
             return true;
         } else {

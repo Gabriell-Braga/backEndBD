@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'backbd';
+$dbname = 'labQuimico';
 $username = 'postgres';
 $password = '1234';
 
