@@ -20,7 +20,7 @@ class Tecnico {
     }
 
     public function readByCPF($cpf) {
-        $query = "SELECT t.*, u.Nome, u.Email FROM " . $this->table_name . " t
+        $query = "SELECT t.*, u.Nome, u.Email,u.Telefone FROM " . $this->table_name . " t
                   INNER JOIN Usuario u ON t.fk_Usuario_CPF = u.CPF
                   WHERE t.fk_Usuario_CPF = :cpf";
         $stmt = $this->conn->prepare($query);
@@ -114,11 +114,11 @@ function handleRequest($conn) {
                     echo json_encode($tecnico_item);
                 } else {
                     // Nenhum técnico encontrado
-                    echo json_encode(array('message' => 'Nenhum técnico encontrado.'));
+                    echo json_encode(array('message' => 'Nenhum técnico encontrado.','status' => true));
                 }
             } else {
                 // Nenhum usuário encontrado
-                echo json_encode(array('message' => 'Nenhum usuário encontrado.'));
+                echo json_encode(array('message' => 'Nenhum usuário encontrado.','status' => false));
             }
         } else {
            // Requisição para obter todos os técnicos
@@ -153,9 +153,9 @@ function handleRequest($conn) {
 
         $tecnico = new Tecnico($conn);
         if ($tecnico->create($cpf, $nome, $email, $senha, $telefone, $data->certificado, $data->numeroCRQ, $data->cargaHoraria)) {
-            echo json_encode(array('message' => 'Usuário e técnico criados com sucesso.'));
+            echo json_encode(array('message' => 'Usuário e técnico criados com sucesso.','status' => true));
         } else {
-            echo json_encode(array('message' => 'Não foi possível criar o usuário e técnico.'));
+            echo json_encode(array('message' => 'Não foi possível criar o usuário e técnico.','status' => false));
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         // Requisição para atualizar um usuário existente
@@ -168,9 +168,9 @@ function handleRequest($conn) {
 
         $tecnico = new Tecnico($conn);
         if ($tecnico->update($cpf, $nome, $email, $telefone, $data->certificado, $data->numeroCRQ, $data->cargaHoraria)) {
-            echo json_encode(array('message' => 'Usuário e técnico atualizados com sucesso.'));
+            echo json_encode(array('message' => 'Usuário e técnico atualizados com sucesso.','status' => true));
         } else {
-            echo json_encode(array('message' => 'Não foi possível atualizar o usuário e técnico.'));
+            echo json_encode(array('message' => 'Não foi possível atualizar o usuário e técnico.','status' => false));
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         // Requisição para excluir um usuário e técnico
@@ -182,9 +182,9 @@ function handleRequest($conn) {
         $tecnico = new Tecnico($conn);
     
         if ($usuario->delete($cpf) && $tecnico->delete($cpf)) {
-            echo json_encode(array('message' => 'Usuário e técnico excluídos com sucesso.'));
+            echo json_encode(array('message' => 'Usuário e técnico excluídos com sucesso.','status' => true));
         } else {
-            echo json_encode(array('message' => 'Não foi possível excluir o usuário e técnico.'));
+            echo json_encode(array('message' => 'Não foi possível excluir o usuário e técnico.','status' => false));
         }
     }
 }

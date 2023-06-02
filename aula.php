@@ -147,6 +147,7 @@ function handleRequest($conn) {
         $topicos_abordado = $data->topicos_abordado;
         $nome = $data->nome;
         $cpf = $data->cpf;
+        
 
         $aula = new Aula($conn);
         if ($aula->create($topico, $topicos_abordado, $nome, $cpf)) {

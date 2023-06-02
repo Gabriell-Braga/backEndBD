@@ -62,8 +62,8 @@ class Quimico {
 
         if ($produtoExists) {
             $query = "UPDATE " . $this->table_name . " 
-                      SET Formula_quimica = :formulaQuimica, Concentracao = :concentracao, Classe_de_risco = :classeRisco, Volume = :volume, 
-                          Data_de_validade = :dataValidade, Quantidade_Quimico = :quantidadeQuimico 
+                      SET Formula_quimica = :formulaQuimica, Concentracao = :concentracao, Classe_de_risco = :classeRisco, Volume  = :volume, 
+                      Data_de_validade = :dataValidade, Quantidade_Quimico = :quantidadeQuimico 
                       WHERE fk_Produto_ID_Prod = :idProduto";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(":formulaQuimica", $formulaQuimica);

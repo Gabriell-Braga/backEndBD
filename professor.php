@@ -152,9 +152,10 @@ function handleRequest($conn) {
         $email = $data->email;
         $telefone = $data->telefone;
         $senha = $data->senha;
+        
 
         $professor = new Professor($conn);
-        if ($professor->create($cpf, $nome, $email, $senha, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data->numAulas)) {
+        if ($professor->create($cpf, $nome, $email, $senha, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data-> numAulas)) {
             echo json_encode(array('message' => 'Usuário e professor criados com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível criar o usuário e professor.'));
@@ -169,7 +170,7 @@ function handleRequest($conn) {
         $telefone = $data->telefone;
 
         $professor = new Professor($conn);
-        if ($professor->update($cpf, $nome, $email, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data->numAulas)) {
+        if ($professor->update($cpf, $nome, $email, $telefone, $data->cursoMinistrados, $data->experienciaEnsino, $data->areaEspecializacao, $data->numAulas, $data->experienciaEnsino)) {
             echo json_encode(array('message' => 'Usuário e professor atualizados com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível atualizar o usuário e professor.'));

@@ -11,11 +11,11 @@ class Auth {
         $this->conn = $db;
     }
 
-    public function login($email, $senha) {
+    public function login($login, $senha) {
         $senha = md5($senha);
-        $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email AND senha = :senha";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE cpf = :login AND senha = :senha";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":login", $login);
         $stmt->bindParam(":senha", $senha);
         $stmt->execute();
 
@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents("php://input"));
 
     if (isset($data->login)) {
-        $email = $data->email;
+        $login = $data->login;
         $senha = $data->senha;
 
         $auth = new Auth($conn);
-        if ($auth->login($email, $senha)) {
+        if ($auth->login($login, $senha)) {
             echo json_encode(array('message' => 'Login realizado com sucesso.', 'status' => true));
         } else {
             echo json_encode(array('message' => 'Credenciais inválidas.', 'status' => false));

@@ -26,7 +26,7 @@ class Reserva {
         return $stmt;
     }
 
-    public function create($horario, $data, $turno, $cpf) {
+    public function create($horario, $data,$cpf) {
         // Verificar se o usuário com o CPF fornecido existe
         $usuario = new Usuario($this->conn);
         $stmt = $usuario->readByCPF($cpf);
@@ -34,12 +34,11 @@ class Reserva {
 
         if ($num > 0) {
             // O usuário existe, pode criar a reserva
-            $query = "INSERT INTO " . $this->table_name . " (HORARIO_RESERVA, DATA_RESERVA, TURNO, fk_Professor_fk_Usuario_CPF) 
-                    VALUES (:horario, :data, :turno, :cpf)";
+            $query = "INSERT INTO " . $this->table_name . "(HORARIO_RESERVA, DATA_RESERVA, fk_Professor_fk_Usuario_CPF) 
+                    VALUES (:horario, :data,:cpf)";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(":horario", $horario);
             $stmt->bindParam(":data", $data);
-            $stmt->bindParam(":turno", $turno);
             $stmt->bindParam(":cpf", $cpf);
 
             if ($stmt->execute()) {
@@ -61,13 +60,12 @@ class Reserva {
 
         if ($num > 0) {
             // O usuário existe, pode atualizar a reserva
-            $query = "UPDATE " . $this->table_name . " SET HORARIO_RESERVA = :horario, DATA_RESERVA = :data, TURNO = :turno, 
+            $query = "UPDATE " . $this->table_name . " SET HORARIO_RESERVA = :horario, DATA_RESERVA = :data, 
                     fk_Professor_fk_Usuario_CPF = :cpf WHERE ID_RESERVA = :id";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(":id", $id);
             $stmt->bindParam(":horario", $horario);
             $stmt->bindParam(":data", $data);
-            $stmt->bindParam(":turno", $turno);
             $stmt->bindParam(":cpf", $cpf);
 
             if ($stmt->execute()) {
@@ -145,11 +143,10 @@ function handleRequest($conn) {
 
         $horario = $data->horario;
         $dataR = $data->data;
-        $turno = $data->turno;
         $cpf = $data->cpf;
 
         $reserva = new Reserva($conn);
-        if ($reserva->create($horario, $dataR, $turno, $cpf)) {
+        if ($reserva->create($horario, $dataR,$cpf)) {
             echo json_encode(array('message' => 'Reserva criada com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível criar a reserva ou o usuário com o CPF fornecido não existe.'));
@@ -161,11 +158,10 @@ function handleRequest($conn) {
         $id = $data->id;
         $horario = $data->horario;
         $dataR = $data->data;
-        $turno = $data->turno;
         $cpf = $data->cpf;
 
         $reserva = new Reserva($conn);
-        if ($reserva->update($id, $horario, $dataR, $turno, $cpf)) {
+        if ($reserva->update($id, $horario, $dataR,$cpf)) {
             echo json_encode(array('message' => 'Reserva atualizada com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível atualizar a reserva ou o usuário com o CPF fornecido não existe.'));

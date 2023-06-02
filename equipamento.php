@@ -46,6 +46,7 @@ class Equipamento {
                 return true;
             } else {
                 // Em caso de falha na inserção do equipamento, excluir o produto correspondente
+                echo 'Em caso de falha na inserção do equipamento, excluir o produto correspondente';
                 $produto->delete($idProduto);
                 return false;
             }
@@ -134,13 +135,13 @@ function handleRequest($conn) {
         $preco = $data->preco;
         $dataFabricacao = $data->dataFabricacao;
         $fkPrateleirasNumeroPrateleira = $data->fkPrateleirasNumeroPrateleira;
-        $tipo = $data->tipo;
+        $tipoEquipamento = $data->tipoEquipamento;
         $capacidade = $data->capacidade;
         $condicoesOperacao = $data->condicoesOperacao;
         $calibracao = $data->calibracao;
 
         $equipamento = new Equipamento($conn);
-        if ($equipamento->create($nome, $descricao, $fabricante, $preco, $dataFabricacao, $fkPrateleirasNumeroPrateleira, $tipo, $capacidade, $condicoesOperacao, $calibracao)) {
+        if ($equipamento->create($nome, $descricao, $fabricante, $preco, $dataFabricacao, $fkPrateleirasNumeroPrateleira, $tipoEquipamento, $capacidade, $condicoesOperacao, $calibracao)) {
             echo json_encode(array('message' => 'Equipamento criado com sucesso.'));
         } else {
             echo json_encode(array('message' => 'Não foi possível criar o equipamento.'));
